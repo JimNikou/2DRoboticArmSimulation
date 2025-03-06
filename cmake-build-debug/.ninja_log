@@ -1,0 +1,4 @@
+# ninja log v6
+1	413	1741271735886841572	build.ninja	bb0ce1e13b2d97cd
+1	1001	1741271735900967612	CMakeFiles/2DRoboticArmSimulation.dir/main.cpp.o	d97a9b14df8e177
+1004	1141	1741271736904061556	2DRoboticArmSimulation	43271b5c7ac4ae4
