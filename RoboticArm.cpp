@@ -110,3 +110,29 @@ void drawThickLine(sf::RenderWindow& window, float x1, float y1, float x2, float
     line.setRotation(std::atan2(direction.y, direction.x) * 180 / 3.14159f); // Convert radians to degrees
     window.draw(line);
 }
+
+/**
+ * Function to draw a claw at the end of the arm.
+ *
+ * This function draws a simple claw mechanism at the end of the second arm segment.
+ * The claw consists of two "fingers" represented as thick lines rotated to face the target.
+ *
+ * @param window The window where the claw will be drawn.
+ * @param x The x-coordinate of the center of the claw.
+ * @param y The y-coordinate of the center of the claw.
+ * @param angle The angle of the arm (used to rotate the claw to align with the arm).
+ * @param length The length of each claw finger.
+ * @param width The width (thickness) of the claw fingers.
+ * @param color The color of the claw.
+ * @return none
+ */
+void drawClaw(sf::RenderWindow& window, float x, float y, float angle, float length, float width, sf::Color color) {
+    // Create two lines for the claw fingers
+    // Both fingers should have the same length and be rotated symmetrically
+    sf::Vector2f claw1(x + length * std::cos(angle - M_PI_4), y + length * std::sin(angle - M_PI_4)); // First finger
+    sf::Vector2f claw2(x + length * std::cos(angle + M_PI_4), y + length * std::sin(angle + M_PI_4)); // Second finger
+
+    // Draw both fingers with the same length
+    drawThickLine(window, x, y, claw1.x, claw1.y, color, width); // First "finger"
+    drawThickLine(window, x, y, claw2.x, claw2.y, color, width); // Second "finger"
+}

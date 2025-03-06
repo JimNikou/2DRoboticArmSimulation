@@ -17,4 +17,6 @@ void calculateArmAngles(float px, float py, float tx, float ty, float L1, float 
 // Function to draw a thick line between two points
 void drawThickLine(sf::RenderWindow& window, float x1, float y1, float x2, float y2, sf::Color color, float thickness);
 
+void drawClaw(sf::RenderWindow& window, float x, float y, float angle, float length, float width, sf::Color color);
+
 #endif // ROBOTICARM_HPP
