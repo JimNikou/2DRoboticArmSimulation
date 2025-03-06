@@ -1,9 +1,26 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
-
+#include <vector>
 #include "RoboticArm.h"
 
+bool elbowUp = false;
+std::vector<sf::CircleShape> items; // For future use if I want to add more Items
+bool itemGrabbed = false;
+sf::Vector2f grabbedItemOffset(0, 0);
+
+void drawItem(int x, int y) {
+    float radius = 5.0f;  // Set a visible size
+    sf::CircleShape item(radius);
+    item.setFillColor(sf::Color::Black);
+    item.setOutlineColor(sf::Color::Black);
+    item.setOutlineThickness(1.0f);
+    item.setPosition(x - radius, y - radius);  // Center the item
+
+
+    items.clear();
+    items.push_back(item); // Store the item so it persists
+}
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Robotic Arm Simulation");
@@ -25,6 +42,8 @@ int main() {
 
     float clawLength = 10.0f; // Length of the claw fingers
     float clawWidth = 2.5f;   // Width of the claw fingers
+
+    float grabDistance = 10.0f;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -51,7 +70,8 @@ int main() {
                 }
 
                 // Calculate the new target angles
-                calculateArmAngles(px, py, tx, ty, L1, L2, targetAngle1, targetAngle2);
+                calculateArmAngles(px, py, tx, ty, L1, L2, targetAngle1, targetAngle2, elbowUp);
+
             }
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -77,7 +97,8 @@ int main() {
                 std::cout << "New target set at (" << (tx - px) / gridSize << ", " << -(ty - py) / gridSize << ") in grid coordinates\n";
 
                 // Calculate the new target angles
-                calculateArmAngles(px, py, tx, ty, L1, L2, targetAngle1, targetAngle2);
+                calculateArmAngles(px, py, tx, ty, L1, L2, targetAngle1, targetAngle2, elbowUp);
+
             }
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
@@ -110,6 +131,16 @@ int main() {
                     std::cout << "Updated zero point - Px: " << px << ", Py: " << py << std::endl;
                 }
             }
+
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+                int mouseX = event.mouseButton.x;
+                int mouseY = event.mouseButton.y;
+                itemGrabbed = false;
+                drawItem(mouseX, mouseY);
+                // std::cout << items[0].getPosition().x << " " << items[0].getPosition().y << std::endl;
+            }
+
+
         }
 
         // Smoothly interpolate angles towards the target angles
@@ -131,6 +162,38 @@ int main() {
         // Draw the claw at the end of the arm (second segment)
         drawClaw(window, x3, y3, currentAngle1 + currentAngle2, clawLength, clawWidth, sf::Color::Black);
 
+
+        bool holdingItem = false;
+        size_t heldItemIndex = -1;
+        float itemSmoothFactor = 0.1f; // Smoothing factor for item movement
+
+        if (!items.empty()) {
+            sf::Vector2f itemPos = items[0].getPosition();
+            float itemX = itemPos.x + items[0].getRadius();
+            float itemY = itemPos.y + items[0].getRadius();
+            float distToClaw = std::sqrt((itemX - x3) * (itemX - x3) + (itemY - y3) * (itemY - y3));
+
+            if (distToClaw < grabDistance) {
+                if (!itemGrabbed) {
+                    itemGrabbed = true;
+                    grabbedItemOffset.x = itemX - x3;
+                    grabbedItemOffset.y = itemY - y3;
+                }
+            }
+
+            if (itemGrabbed) {
+                // Offset the item forward so it's not directly above the claw
+                float offsetDistance = clawLength * 1.0f; // Move item slightly forward
+                float clawTipX = x3 + offsetDistance * std::cos(currentAngle1 + currentAngle2);
+                float clawTipY = y3 + offsetDistance * std::sin(currentAngle1 + currentAngle2);
+
+                items[0].setPosition(clawTipX - items[0].getRadius(), clawTipY - items[0].getRadius());
+            }
+
+        }
+
+
+
         drawJoint(window, x2, y2);
 
         // Draw the minimum reach circle (radius L1 - L2)
@@ -140,6 +203,10 @@ int main() {
         drawMaxReachCircle(window, px, py, L1, L2);
 
         drawZeroPoint(window, px, py);
+
+        for (const auto& item : items) {
+            window.draw(item);
+        }
 
         window.display();
     }

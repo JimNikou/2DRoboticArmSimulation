@@ -61,25 +61,52 @@ float lerp(float a, float b, float t) {
  * @param angle2 The calculated angle for the second joint (output).
  * @return none
  */
-void calculateArmAngles(float px, float py, float tx, float ty, float L1, float L2, float& angle1, float& angle2) {
+void calculateArmAngles(float px, float py, float tx, float ty, float L1, float L2, float& angle1, float& angle2, bool& elbowUp) {
+    // Calculate the distance to the target
     float dx = tx - px;
     float dy = ty - py;
-    float d = std::sqrt(dx * dx + dy * dy);
+    float distance = std::sqrt(dx * dx + dy * dy);
 
-    if (d > L1 + L2) {
-        std::cout << "Target out of reach!" << std::endl;
+    // Check if the target is within the reachable area
+    if (distance > L1 + L2 || distance < std::abs(L1 - L2)) {
+        std::cout << "Target is out of reach!\n";
         return;
     }
 
-    // Inverse Kinematics using Law of Cosines
-    float cos_angle2 = (d * d - L1 * L1 - L2 * L2) / (2 * L1 * L2);
-    angle2 = std::acos(cos_angle2);
+    // Calculate the cosine of angle2 using the law of cosines
+    float cosAngle2 = (dx * dx + dy * dy - L1 * L1 - L2 * L2) / (2 * L1 * L2);
+    if (cosAngle2 < -1 || cosAngle2 > 1) {
+        std::cout << "Invalid target position\n";
+        return;
+    }
 
-    float cos_angle1 = (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d);
-    float theta1 = std::acos(cos_angle1);
-    float gamma = std::atan2(dy, dx);
+    // Calculate both possible angles for angle2 (elbow-up and elbow-down)
+    float angle2_ElbowUp = std::acos(cosAngle2);   // Elbow-up configuration
+    float angle2_ElbowDown = -std::acos(cosAngle2); // Elbow-down configuration
 
-    angle1 = gamma - theta1;
+    // Calculate the first angle (angle1) for both configurations
+    float k1_ElbowUp = L1 + L2 * std::cos(angle2_ElbowUp);
+    float k2_ElbowUp = L2 * std::sin(angle2_ElbowUp);
+    float angle1_ElbowUp = std::atan2(dy, dx) - std::atan2(k2_ElbowUp, k1_ElbowUp);
+
+    float k1_ElbowDown = L1 + L2 * std::cos(angle2_ElbowDown);
+    float k2_ElbowDown = L2 * std::sin(angle2_ElbowDown);
+    float angle1_ElbowDown = std::atan2(dy, dx) - std::atan2(k2_ElbowDown, k1_ElbowDown);
+
+    // Choose the configuration that minimizes the total angular movement
+    float angleDiff_ElbowUp = std::abs(angle1_ElbowUp - angle1);
+    float angleDiff_ElbowDown = std::abs(angle1_ElbowDown - angle1);
+
+    // If elbow-down configuration results in a smaller total movement, use it
+    if (angleDiff_ElbowDown < angleDiff_ElbowUp) {
+        angle1 = angle1_ElbowDown;
+        angle2 = angle2_ElbowDown;
+        elbowUp = false; // Switch to elbow-down configuration
+    } else {
+        angle1 = angle1_ElbowUp;
+        angle2 = angle2_ElbowUp;
+        elbowUp = true; // Keep elbow-up configuration
+    }
 }
 
 /**
@@ -126,6 +153,7 @@ void drawThickLine(sf::RenderWindow& window, float x1, float y1, float x2, float
  * @param color The color of the claw.
  * @return none
  */
+
 void drawClaw(sf::RenderWindow& window, float x, float y, float angle, float length, float width, sf::Color color) {
     // Create two lines for the claw fingers
     // Both fingers should have the same length and be rotated symmetrically
@@ -175,3 +203,4 @@ void drawZeroPoint(sf::RenderWindow& window, float x2, float y2) {
     joint.setPosition(x2-offset, y2-offset);
     window.draw(joint);
 }
+
