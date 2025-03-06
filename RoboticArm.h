@@ -19,4 +19,11 @@ void drawThickLine(sf::RenderWindow& window, float x1, float y1, float x2, float
 
 void drawClaw(sf::RenderWindow& window, float x, float y, float angle, float length, float width, sf::Color color);
 
+void drawJoint(sf::RenderWindow& window, float x, float y);
+
+void drawMinReachCircle(sf::RenderWindow& window, float x, float y, float L1, float L2);
+
+void drawMaxReachCircle(sf::RenderWindow& window, float x, float y, float L1, float L2);
+
+void drawZeroPoint(sf::RenderWindow& window, float x2, float y2);
 #endif // ROBOTICARM_HPP

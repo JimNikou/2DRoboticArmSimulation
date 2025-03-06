@@ -136,3 +136,42 @@ void drawClaw(sf::RenderWindow& window, float x, float y, float angle, float len
     drawThickLine(window, x, y, claw1.x, claw1.y, color, width); // First "finger"
     drawThickLine(window, x, y, claw2.x, claw2.y, color, width); // Second "finger"
 }
+
+
+void drawJoint(sf::RenderWindow& window, float x, float y) {
+    float offset = 7;
+    sf::CircleShape joint(offset);
+    joint.setFillColor(sf::Color::Black);
+    joint.setOutlineColor(sf::Color::Black);
+    joint.setPosition(x-offset, y-offset);
+    window.draw(joint);
+}
+
+void drawMinReachCircle(sf::RenderWindow& window, float x, float y, float L1, float L2) {
+    float minReach = std::max(0.0f, L1 - L2);  // Ensure non-negative minimum reach
+    sf::CircleShape minReachCircle(minReach);
+    minReachCircle.setFillColor(sf::Color::Transparent);
+    minReachCircle.setOutlineColor(sf::Color::Black);
+    minReachCircle.setOutlineThickness(1);
+    minReachCircle.setPosition(x - minReach, y - minReach); // Center the circle at (px, py)
+    window.draw(minReachCircle);
+}
+
+void drawMaxReachCircle(sf::RenderWindow& window, float x, float y, float L1, float L2) {
+    float maxReach = L1 + L2; // Maximum reach is the sum of both arm segments
+    sf::CircleShape maxReachCircle(maxReach);
+    maxReachCircle.setFillColor(sf::Color::Transparent);
+    maxReachCircle.setOutlineColor(sf::Color::Red);
+    maxReachCircle.setOutlineThickness(1);
+    maxReachCircle.setPosition(x - maxReach, y - maxReach); // Center the circle at (px, py)
+    window.draw(maxReachCircle);
+}
+
+void drawZeroPoint(sf::RenderWindow& window, float x2, float y2) {
+    float offset = 7;
+    sf::CircleShape joint(offset);
+    joint.setFillColor(sf::Color::Black);
+    joint.setOutlineColor(sf::Color::Black);
+    joint.setPosition(x2-offset, y2-offset);
+    window.draw(joint);
+}

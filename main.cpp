@@ -19,7 +19,7 @@ int main() {
     float targetAngle1 = 0, targetAngle2 = 0; // Target arm angles
     float currentAngle1 = 0, currentAngle2 = 0; // Current animated arm angles
 
-    float thickness = 3.0f; // Thickness of the arm
+    float thickness = 4.0f; // Thickness of the arm
     float smoothFactor = 0.001f; // Factor for smooth movement
 
 
@@ -33,7 +33,7 @@ int main() {
                 window.close();
 
             // Enter target coordinates in grid squares (relative to center)
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::C) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P) {
                 std::cout << "Enter new target coordinates (tx ty): ";
                 float x, y;
                 std::cin >> x >> y;
@@ -95,6 +95,21 @@ int main() {
                     std::cout << "Updated lengths - L1: " << L1 << ", L2: " << L2 << std::endl;
                 }
             }
+
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::C) {
+                std::cout << "Enter new zero point X: ";
+                std::cin >> px;
+                std::cout << "Enter new zero point Y: ";
+                std::cin >> py;
+
+                if (px < 0 || py < 0) {
+                    std::cout << "Zero point must be positive number!" << std::endl;
+                    px = 400; // Reset to default if invalid input
+                    py = 300;
+                } else {
+                    std::cout << "Updated zero point - Px: " << px << ", Py: " << py << std::endl;
+                }
+            }
         }
 
         // Smoothly interpolate angles towards the target angles
@@ -116,24 +131,15 @@ int main() {
         // Draw the claw at the end of the arm (second segment)
         drawClaw(window, x3, y3, currentAngle1 + currentAngle2, clawLength, clawWidth, sf::Color::Black);
 
+        drawJoint(window, x2, y2);
 
         // Draw the minimum reach circle (radius L1 - L2)
-        float minReach = std::max(0.0f, L1 - L2);  // Ensure non-negative minimum reach
-        sf::CircleShape minReachCircle(minReach);
-        minReachCircle.setFillColor(sf::Color::Transparent);
-        minReachCircle.setOutlineColor(sf::Color::Black);
-        minReachCircle.setOutlineThickness(1);
-        minReachCircle.setPosition(px - minReach, py - minReach); // Center the circle at (px, py)
-        window.draw(minReachCircle);
+        drawMinReachCircle(window, px, py, L1, L2);
 
         // Draw the maximum reach circle (radius L1 + L2)
-        float maxReach = L1 + L2; // Maximum reach is the sum of both arm segments
-        sf::CircleShape maxReachCircle(maxReach);
-        maxReachCircle.setFillColor(sf::Color::Transparent);
-        maxReachCircle.setOutlineColor(sf::Color::Red);
-        maxReachCircle.setOutlineThickness(1);
-        maxReachCircle.setPosition(px - maxReach, py - maxReach); // Center the circle at (px, py)
-        window.draw(maxReachCircle);
+        drawMaxReachCircle(window, px, py, L1, L2);
+
+        drawZeroPoint(window, px, py);
 
         window.display();
     }
