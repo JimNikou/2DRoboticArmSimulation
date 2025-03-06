@@ -56,6 +56,13 @@ build CMakeFiles/2DRoboticArmSimulation.dir/main.cpp.o: CXX_COMPILER__2DRoboticA
   OBJECT_DIR = CMakeFiles/2DRoboticArmSimulation.dir
   OBJECT_FILE_DIR = CMakeFiles/2DRoboticArmSimulation.dir
 
+build CMakeFiles/2DRoboticArmSimulation.dir/RoboticArm.cpp.o: CXX_COMPILER__2DRoboticArmSimulation_unscanned_Debug /Users/dimitriosnikou/CLionProjects/2DRoboticArmSimulation/RoboticArm.cpp || cmake_object_order_depends_target_2DRoboticArmSimulation
+  DEP_FILE = CMakeFiles/2DRoboticArmSimulation.dir/RoboticArm.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
+  INCLUDES = -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/2DRoboticArmSimulation.dir
+  OBJECT_FILE_DIR = CMakeFiles/2DRoboticArmSimulation.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target 2DRoboticArmSimulation
@@ -64,7 +71,7 @@ build CMakeFiles/2DRoboticArmSimulation.dir/main.cpp.o: CXX_COMPILER__2DRoboticA
 #############################################
 # Link the executable 2DRoboticArmSimulation
 
-build 2DRoboticArmSimulation: CXX_EXECUTABLE_LINKER__2DRoboticArmSimulation_Debug CMakeFiles/2DRoboticArmSimulation.dir/main.cpp.o | /opt/homebrew/lib/libsfml-graphics.2.6.2.dylib /opt/homebrew/lib/libsfml-window.2.6.2.dylib /opt/homebrew/lib/libsfml-system.2.6.2.dylib
+build 2DRoboticArmSimulation: CXX_EXECUTABLE_LINKER__2DRoboticArmSimulation_Debug CMakeFiles/2DRoboticArmSimulation.dir/main.cpp.o CMakeFiles/2DRoboticArmSimulation.dir/RoboticArm.cpp.o | /opt/homebrew/lib/libsfml-graphics.2.6.2.dylib /opt/homebrew/lib/libsfml-window.2.6.2.dylib /opt/homebrew/lib/libsfml-system.2.6.2.dylib
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk
   LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  /opt/homebrew/lib/libsfml-graphics.2.6.2.dylib  /opt/homebrew/lib/libsfml-window.2.6.2.dylib  /opt/homebrew/lib/libsfml-system.2.6.2.dylib
   OBJECT_DIR = CMakeFiles/2DRoboticArmSimulation.dir

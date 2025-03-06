@@ -6,7 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(SFML 2.5 REQUIRED COMPONENTS graphics window system)
 
 
-add_executable(2DRoboticArmSimulation main.cpp)
+add_executable(2DRoboticArmSimulation main.cpp
+        RoboticArm.h
+        RoboticArm.cpp)
 target_link_libraries(2DRoboticArmSimulation sfml-graphics sfml-window sfml-system)
 
 
